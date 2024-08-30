@@ -34,15 +34,23 @@ document.getElementById("purchase-btn").addEventListener("click", function () {
       ["PENNY", 0.01],
     ];
 
+    function precisionRound(number, precision) {
+      var factor = Math.pow(10, precision);
+      return Math.round(number * factor) / factor;
+  }
+
     for (let [unit, value] of currencyUnits) {
       let amountInDrawer = cid.find((item) => item[0] === unit)[1];
       let amountToReturn = 0;
 
       while (changeDue >= value && amountInDrawer >= value) {
         changeDue -= value;
+        changeDue = precisionRound(changeDue,2);
+         // Fix floating point precision issues
         amountInDrawer -= value;
+        amountInDrawer = precisionRound(amountInDrawer,2);
         amountToReturn += value;
-        changeDue = Math.round(changeDue * 100) / 100; // Fix floating point precision issues
+        amountToReturn = precisionRound(amountToReturn,2);
       }
 
       if (amountToReturn > 0) {
@@ -51,7 +59,7 @@ document.getElementById("purchase-btn").addEventListener("click", function () {
     }
 
     if (changeDue > 0) {
-        console.log(changeDue);
+      console.log(changeDue);
       document.getElementById("change-due").innerText =
         "Status: INSUFFICIENT_FUNDS";
     } else {
